@@ -203,10 +203,29 @@ export default function App() {
   const [activeTab, setActiveTab] = useState('editor');
   const [activeSection, setActiveSection] = useState('personal');
   const [successMessage, setSuccessMessage] = useState('');
+  const [pageGuides, setPageGuides] = useState<number[]>([]);
+  const cvContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     localStorage.setItem('cv_builder_data_local', JSON.stringify(cvData));
   }, [cvData]);
+
+  useEffect(() => {
+    const el = cvContainerRef.current;
+    if (!el) return;
+    const update = () => {
+      const mmToPx = el.offsetWidth / 210;
+      const pageHeightPx = 297 * mmToPx;
+      const pages = Math.ceil(el.offsetHeight / pageHeightPx);
+      setPageGuides(
+        Array.from({ length: Math.max(0, pages - 1) }, (_, i) => (i + 1) * pageHeightPx)
+      );
+    };
+    const observer = new ResizeObserver(update);
+    observer.observe(el);
+    update();
+    return () => observer.disconnect();
+  }, []);
 
   const triggerNotification = (msg: string) => {
     setSuccessMessage(msg);
@@ -1001,25 +1020,27 @@ export default function App() {
             activeTab === 'preview' ? 'block' : 'hidden sm:block'
           } print:block print:w-full`}
         >
-          <div
-            id="cv-preview-container"
-            className={`w-full max-w-[210mm] min-h-[297mm] bg-white shadow-lg border border-slate-200 rounded-md mx-auto overflow-hidden print:shadow-none print:border-none print:rounded-none print:max-w-full print:min-h-0 ${
-              cvData.config.fontFamily === 'font-serif'
-                ? 'font-serif'
-                : cvData.config.fontFamily === 'font-mono'
-                  ? 'font-mono'
-                  : 'font-sans'
-            } ${
-              cvData.config.fontSize === 'small'
-                ? 'text-xs'
-                : cvData.config.fontSize === 'large'
-                  ? 'text-base'
-                  : 'text-sm'
-            }`}
-          >
+          <div className="relative w-full max-w-[210mm] mx-auto print:max-w-full">
+            <div
+              id="cv-preview-container"
+              ref={cvContainerRef}
+              className={`w-full min-h-[297mm] bg-white shadow-lg border border-slate-200 rounded-md overflow-hidden print:shadow-none print:border-none print:rounded-none print:overflow-visible ${
+                cvData.config.fontFamily === 'font-serif'
+                  ? 'font-serif'
+                  : cvData.config.fontFamily === 'font-mono'
+                    ? 'font-mono'
+                    : 'font-sans'
+              } ${
+                cvData.config.fontSize === 'small'
+                  ? 'text-xs'
+                  : cvData.config.fontSize === 'large'
+                    ? 'text-base'
+                    : 'text-sm'
+              }`}
+            >
             {/* 1. MODERN LAYOUT */}
             {cvData.config.template === 'modern' && (
-              <div className="grid grid-cols-12 min-h-[297mm] h-full">
+              <div className="grid grid-cols-12 min-h-[297mm]">
                 <div
                   style={{ backgroundColor: `${cvData.config.accentColor}15` }}
                   className="col-span-4 p-6 border-r border-slate-100 flex flex-col gap-6"
@@ -1478,6 +1499,22 @@ export default function App() {
                 </div>
               </div>
             )}
+            </div>
+
+            {/* Paginagidsen – alleen zichtbaar in de preview, niet bij printen */}
+            {pageGuides.map((top, i) => (
+              <div
+                key={i}
+                className="absolute left-0 right-0 flex items-center gap-2 pointer-events-none print:hidden z-10"
+                style={{ top: `${top}px` }}
+              >
+                <div className="flex-1 border-t-2 border-dashed border-slate-300" />
+                <span className="text-[10px] bg-white text-slate-400 px-2 py-0.5 rounded border border-slate-200 shrink-0">
+                  Pagina {i + 2}
+                </span>
+                <div className="flex-1 border-t-2 border-dashed border-slate-300" />
+              </div>
+            ))}
           </div>
         </section>
       </main>

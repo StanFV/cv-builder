@@ -26,12 +26,22 @@ body {
     top: 0 !important;
     width: 210mm !important;
     height: auto !important;
+    overflow: visible !important;
     margin: 0 !important;
     padding: 0 !important;
     border: none !important;
     box-shadow: none !important;
+    border-radius: 0 !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
+  }
+
+  /* Voorkom dat secties halverwege afbreken */
+  #cv-preview-container h3,
+  #cv-preview-container h4,
+  #cv-preview-container .space-y-3 > div,
+  #cv-preview-container .space-y-4 > div {
+    break-inside: avoid;
   }
 }
 
