@@ -23,7 +23,6 @@ import {
   Phone,
   Globe,
   MapPin,
-  Sparkles,
   CheckCircle,
   FileDown,
   FileUp,
@@ -291,9 +290,16 @@ export default function App() {
       const canvas = await html2canvas(element, {
         scale: 2,
         useCORS: true,
-        allowTaint: true,
         backgroundColor: '#ffffff',
         logging: false,
+        onclone: (_doc, el) => {
+          // Vervang externe afbeeldingen door een lege placeholder zodat het canvas niet getaint wordt
+          el.querySelectorAll<HTMLImageElement>('img').forEach((img) => {
+            if (img.src.startsWith('http')) {
+              img.removeAttribute('src');
+            }
+          });
+        },
       });
 
       const imgData = canvas.toDataURL('image/jpeg', 0.95);
@@ -463,16 +469,10 @@ export default function App() {
       {/* HEADER */}
       <header className="bg-white border-b border-slate-200 sticky top-0 z-40 px-4 py-3 shadow-xs print:hidden">
         <div className="max-w-7xl mx-auto flex flex-col xl:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2.5">
-            <div className="bg-gradient-to-tr from-teal-600 to-cyan-500 p-2 rounded-xl text-white shadow-md shadow-teal-500/10">
-              <Sparkles className="h-6 w-6" />
-            </div>
-            <div>
-              <h1 className="font-extrabold text-xl tracking-tight bg-gradient-to-r from-teal-600 to-cyan-600 bg-clip-text text-transparent">
-                CV-Bouwer
-              </h1>
-              <p className="text-xs text-slate-500">Volledig lokaal & veilig</p>
-            </div>
+          <div className="flex items-center">
+            <h1 className="font-extrabold text-xl tracking-tight bg-gradient-to-r from-teal-600 to-cyan-600 bg-clip-text text-transparent">
+              CV-Bouwer
+            </h1>
           </div>
 
           <div className="flex items-center flex-wrap gap-2 justify-center w-full xl:w-auto">
