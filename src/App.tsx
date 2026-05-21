@@ -1,6 +1,4 @@
 import { useState, useEffect, useRef } from 'react';
-import html2canvas from 'html2canvas';
-import { jsPDF } from 'jspdf';
 import {
   Plus,
   Trash2,
@@ -9,7 +7,6 @@ import {
   Eye,
   EyeOff,
   Printer,
-  Loader2,
   Briefcase,
   GraduationCap,
   Languages,
@@ -206,7 +203,6 @@ export default function App() {
   const [activeTab, setActiveTab] = useState('editor');
   const [activeSection, setActiveSection] = useState('personal');
   const [successMessage, setSuccessMessage] = useState('');
-  const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
 
   useEffect(() => {
     localStorage.setItem('cv_builder_data_local', JSON.stringify(cvData));
@@ -281,55 +277,8 @@ export default function App() {
     e.target.value = '';
   };
 
-  const handleGeneratePDF = async () => {
-    const element = document.getElementById('cv-preview-container');
-    if (!element) return;
-
-    setIsGeneratingPDF(true);
-    try {
-      const canvas = await html2canvas(element, {
-        scale: 2,
-        useCORS: true,
-        backgroundColor: '#ffffff',
-        logging: false,
-        onclone: (_doc, el) => {
-          // Vervang externe afbeeldingen door een lege placeholder zodat het canvas niet getaint wordt
-          el.querySelectorAll<HTMLImageElement>('img').forEach((img) => {
-            if (img.src.startsWith('http')) {
-              img.removeAttribute('src');
-            }
-          });
-        },
-      });
-
-      const imgData = canvas.toDataURL('image/jpeg', 0.95);
-      const pdf = new jsPDF({ orientation: 'p', unit: 'mm', format: 'a4' });
-      const pdfW = pdf.internal.pageSize.getWidth();
-      const pdfH = pdf.internal.pageSize.getHeight();
-      const imgH = (canvas.height * pdfW) / canvas.width;
-
-      let heightLeft = imgH;
-      let position = 0;
-
-      pdf.addImage(imgData, 'JPEG', 0, position, pdfW, imgH);
-      heightLeft -= pdfH;
-
-      while (heightLeft > 0) {
-        position = heightLeft - imgH;
-        pdf.addPage();
-        pdf.addImage(imgData, 'JPEG', 0, position, pdfW, imgH);
-        heightLeft -= pdfH;
-      }
-
-      const name = (cvData.personal.lastName || 'CV').replace(/\s+/g, '_');
-      pdf.save(`CV_${name}.pdf`);
-      triggerNotification('PDF succesvol gedownload!');
-    } catch (err) {
-      console.error(err);
-      alert('PDF maken mislukt. Controleer je verbinding en probeer opnieuw.');
-    } finally {
-      setIsGeneratingPDF(false);
-    }
+  const handlePrint = () => {
+    window.print();
   };
 
   const handlePersonalChange = (field: keyof PersonalData, val: string) => {
@@ -514,16 +463,11 @@ export default function App() {
               Exporteer Back-up
             </button>
             <button
-              onClick={handleGeneratePDF}
-              disabled={isGeneratingPDF}
-              className="flex items-center gap-2 bg-teal-600 hover:bg-teal-700 disabled:bg-teal-400 text-white font-semibold text-xs px-4 py-2 rounded-lg shadow-sm transition hover:shadow-md"
+              onClick={handlePrint}
+              className="flex items-center gap-2 bg-teal-600 hover:bg-teal-700 text-white font-semibold text-xs px-4 py-2 rounded-lg shadow-sm transition hover:shadow-md"
             >
-              {isGeneratingPDF ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                <Printer className="h-4 w-4" />
-              )}
-              {isGeneratingPDF ? 'Bezig...' : 'Maak PDF'}
+              <Printer className="h-4 w-4" />
+              Maak PDF
             </button>
           </div>
         </div>
@@ -735,7 +679,7 @@ export default function App() {
               </div>
             </div>
 
-            <div className="p-5 flex-1 overflow-y-auto max-h-[500px]">
+            <div className="p-5 flex-1 overflow-y-auto">
               {/* Persoonlijke gegevens */}
               {activeSection === 'personal' && (
                 <div className="space-y-4">
@@ -1057,17 +1001,6 @@ export default function App() {
             activeTab === 'preview' ? 'block' : 'hidden sm:block'
           } print:block print:w-full`}
         >
-          <div className="w-full max-w-[210mm] mb-3 bg-indigo-50 border border-indigo-200 rounded-xl p-3 text-xs text-indigo-700 flex items-center gap-2 print:hidden">
-            <span className="flex h-2 w-2 relative shrink-0">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-indigo-500"></span>
-            </span>
-            <span>
-              <strong>Tip:</strong> Download altijd je JSON-backup. Mocht PDF Printen niet werken,
-              controleer of ad-blockers dit blokkeren of open het op je bureaublad.
-            </span>
-          </div>
-
           <div
             id="cv-preview-container"
             className={`w-full max-w-[210mm] min-h-[297mm] bg-white shadow-lg border border-slate-200 rounded-md mx-auto overflow-hidden print:shadow-none print:border-none print:rounded-none print:max-w-full print:min-h-0 ${
@@ -1549,18 +1482,6 @@ export default function App() {
         </section>
       </main>
 
-      <style>{`
-        @media print {
-          body * { visibility: hidden; background: none !important; }
-          #cv-preview-container, #cv-preview-container * { visibility: visible; }
-          #cv-preview-container {
-            position: absolute; left: 0; top: 0; width: 210mm !important; height: 297mm !important;
-            margin: 0 !important; padding: 0 !important; border: none !important; box-shadow: none !important;
-            background-color: #ffffff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact;
-          }
-        }
-        @page { size: A4; margin: 0; }
-      `}</style>
     </div>
   );
 }
