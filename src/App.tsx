@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+﻿import { useState, useEffect, useRef } from 'react';
 import {
   Plus,
   Trash2,
@@ -81,7 +81,7 @@ const VOORBEELD_DATA: CvData = {
     website: 'www.sophiedevries.nl',
     address: 'Amsterdam, Nederland',
     summary:
-      'Gedreven en creatieve UX/UI Designer met meer dan 5 jaar ervaring in het ontwerpen en bouwen van gebruiksvriendelijke webapplicaties. Sterk in het vertalen van complexe gebruikersbehoeften naar intuïtieve, visueel aantrekkelijke interfaces. Werkt graag op het snijvlak van design en technologie.',
+      'Gedreven en creatieve UX/UI Designer met meer dan 5 jaar ervaring in het ontwerpen en bouwen van gebruiksvriendelijke webapplicaties. Sterk in het vertalen van complexe gebruikersbehoeften naar intuÃ¯tieve, visueel aantrekkelijke interfaces. Werkt graag op het snijvlak van design en technologie.',
     avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150',
   },
   sections: [
@@ -99,7 +99,7 @@ const VOORBEELD_DATA: CvData = {
           startDate: '2022-03',
           endDate: 'Heden',
           description:
-            'Verantwoordelijk voor de UX/UI strategie van grote e-commerce cliënten. Leiden van design sprints en gebruikerstesten.',
+            'Verantwoordelijk voor de UX/UI strategie van grote e-commerce cliÃ«nten. Leiden van design sprints en gebruikerstesten.',
         },
         {
           id: 'w2',
@@ -188,6 +188,432 @@ const ACCENT_COLORS = [
   { name: 'Chique Zwart', hex: '#18181b' },
 ];
 
+function CVContent({ cvData }: { cvData: CvData }) {
+  return (
+    <>
+      {/* 1. MODERN LAYOUT */}
+      {cvData.config.template === 'modern' && (
+        <div className="grid grid-cols-12 min-h-[297mm]">
+          <div
+            style={{ backgroundColor: `${cvData.config.accentColor}15` }}
+            className="col-span-4 p-6 border-r border-slate-100 flex flex-col gap-6"
+          >
+            <div className="text-center">
+              {cvData.config.showPhoto && cvData.personal.avatar && (
+                <img
+                  src={cvData.personal.avatar}
+                  className="w-24 h-24 rounded-full object-cover mx-auto mb-3 border-2"
+                  style={{ borderColor: cvData.config.accentColor }}
+                  alt="Avatar"
+                />
+              )}
+              <h2 className="font-extrabold text-lg leading-tight text-slate-900">
+                {cvData.personal.firstName} {cvData.personal.lastName}
+              </h2>
+              <p className="text-xs font-semibold mt-1 text-slate-600">
+                {cvData.personal.jobTitle}
+              </p>
+            </div>
+
+            <div className="space-y-3 text-slate-700 pt-4 border-t border-slate-200/50">
+              <h3 className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
+                Contact
+              </h3>
+              {cvData.personal.email && (
+                <div className="flex gap-2 text-[11px]">
+                  <Mail className="h-3.5 w-3.5 shrink-0" style={{ color: cvData.config.accentColor }} />
+                  <span className="break-all">{cvData.personal.email}</span>
+                </div>
+              )}
+              {cvData.personal.phone && (
+                <div className="flex gap-2 text-[11px]">
+                  <Phone className="h-3.5 w-3.5 shrink-0" style={{ color: cvData.config.accentColor }} />
+                  <span>{cvData.personal.phone}</span>
+                </div>
+              )}
+              {cvData.personal.address && (
+                <div className="flex gap-2 text-[11px]">
+                  <MapPin className="h-3.5 w-3.5 shrink-0" style={{ color: cvData.config.accentColor }} />
+                  <span>{cvData.personal.address}</span>
+                </div>
+              )}
+              {cvData.personal.website && (
+                <div className="flex gap-2 text-[11px]">
+                  <Globe className="h-3.5 w-3.5 shrink-0" style={{ color: cvData.config.accentColor }} />
+                  <span className="break-all">{cvData.personal.website}</span>
+                </div>
+              )}
+            </div>
+
+            {cvData.sections
+              .filter((s) => s.visible && ['skills', 'languages'].includes(s.type))
+              .map((sec) => (
+                <div key={sec.id} className="pt-4 border-t border-slate-200/50 cv-block">
+                  <h3 className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-2">
+                    {sec.title}
+                  </h3>
+                  <div className="space-y-2">
+                    {sec.items.map((item) => (
+                      <div key={item.id} className="text-[11px]">
+                        <div className="font-bold text-slate-800">{item.name}</div>
+                        <div className="text-[9px] text-slate-500">{item.level}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+          </div>
+
+          <div className="col-span-8 p-8 flex flex-col gap-6">
+            {cvData.personal.summary && (
+              <div className="cv-block">
+                <h3
+                  className="text-[11px] font-bold uppercase tracking-wider mb-2"
+                  style={{ color: cvData.config.accentColor }}
+                >
+                  Profiel
+                </h3>
+                <p className="text-slate-600 leading-relaxed text-[11px]">
+                  {cvData.personal.summary}
+                </p>
+              </div>
+            )}
+
+            {cvData.sections
+              .filter((s) => s.visible && !['skills', 'languages'].includes(s.type))
+              .map((sec) => (
+                <div key={sec.id} className="space-y-3 cv-block">
+                  <h3
+                    className="text-[11px] font-bold uppercase tracking-wider pb-1 border-b"
+                    style={{
+                      color: cvData.config.accentColor,
+                      borderColor: `${cvData.config.accentColor}30`,
+                    }}
+                  >
+                    {sec.title}
+                  </h3>
+                  <div className="space-y-4">
+                    {sec.items.map((item) => (
+                      <div key={item.id}>
+                        <div className="flex justify-between items-baseline gap-1">
+                          <div>
+                            <h4 className="font-bold text-slate-800 text-[12px]">{item.title}</h4>
+                            <span className="text-[10px] font-semibold text-slate-500">{item.subtitle}</span>
+                            {item.location && (
+                              <span className="text-[9px] text-slate-400"> â€¢ {item.location}</span>
+                            )}
+                          </div>
+                          <span className="text-[9px] font-bold text-slate-500 shrink-0">
+                            {item.startDate} {item.endDate && `â€“ ${item.endDate}`}
+                          </span>
+                        </div>
+                        {item.description && (
+                          <p className="text-slate-600 text-[11px] mt-1 whitespace-pre-line leading-relaxed">
+                            {item.description}
+                          </p>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+          </div>
+        </div>
+      )}
+
+      {/* 2. KLASSIEK LAYOUT */}
+      {cvData.config.template === 'classic' && (
+        <div className="p-8 sm:p-10 flex flex-col gap-6">
+          <div
+            className="text-center border-b pb-6 cv-block"
+            style={{ borderColor: `${cvData.config.accentColor}30` }}
+          >
+            <h2
+              className="font-extrabold text-2xl tracking-wide text-slate-900"
+              style={{ color: cvData.config.accentColor }}
+            >
+              {cvData.personal.firstName.toUpperCase()} {cvData.personal.lastName.toUpperCase()}
+            </h2>
+            <p className="text-xs font-semibold uppercase tracking-wider text-slate-600 mt-1">
+              {cvData.personal.jobTitle}
+            </p>
+            <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 mt-4 text-[11px] text-slate-600">
+              {cvData.personal.email && <span>{cvData.personal.email}</span>}
+              {cvData.personal.phone && <span>{cvData.personal.phone}</span>}
+              {cvData.personal.address && <span>{cvData.personal.address}</span>}
+              {cvData.personal.website && <span>{cvData.personal.website}</span>}
+            </div>
+          </div>
+
+          {cvData.personal.summary && (
+            <div className="text-center max-w-2xl mx-auto cv-block">
+              <p className="text-slate-600 leading-relaxed italic text-[11px]">
+                &ldquo;{cvData.personal.summary}&rdquo;
+              </p>
+            </div>
+          )}
+
+          {cvData.sections
+            .filter((s) => s.visible)
+            .map((sec) => {
+              const isGrid = ['skills', 'languages'].includes(sec.type);
+              return (
+                <div key={sec.id} className="space-y-2 cv-block">
+                  <h3
+                    className="text-[11px] font-extrabold uppercase tracking-widest pb-1 border-b-2"
+                    style={{
+                      color: cvData.config.accentColor,
+                      borderColor: cvData.config.accentColor,
+                    }}
+                  >
+                    {sec.title}
+                  </h3>
+                  {isGrid ? (
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 pt-1">
+                      {sec.items.map((item) => (
+                        <div key={item.id} className="text-[11px]">
+                          <span className="font-bold text-slate-800">{item.name ?? item.title}</span>
+                          {item.level && (
+                            <span className="text-slate-500 font-medium"> ({item.level})</span>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="space-y-4 pt-1">
+                      {sec.items.map((item) => (
+                        <div key={item.id} className="flex flex-col sm:flex-row justify-between gap-2">
+                          <div className="flex-1">
+                            <h4 className="font-bold text-slate-800 text-[12px]">{item.title}</h4>
+                            <div className="text-[10px] text-slate-600 font-medium">
+                              {item.subtitle} {item.location && `â€¢ ${item.location}`}
+                            </div>
+                            {item.description && (
+                              <p className="text-slate-600 text-[11px] mt-1 whitespace-pre-line leading-relaxed">
+                                {item.description}
+                              </p>
+                            )}
+                          </div>
+                          <div className="text-[9px] font-bold text-slate-500 sm:text-right shrink-0">
+                            {item.startDate} {item.endDate && `â€“ ${item.endDate}`}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+        </div>
+      )}
+
+      {/* 3. MINIMALISTISCH LAYOUT */}
+      {cvData.config.template === 'minimal' && (
+        <div className="p-8 sm:p-12 flex flex-col gap-8">
+          <div className="flex flex-col sm:flex-row justify-between items-start gap-4 border-b pb-4 border-slate-100 cv-block">
+            <div>
+              <h2 className="font-light text-2xl tracking-tight text-slate-900">
+                <strong className="font-semibold">{cvData.personal.firstName}</strong>{' '}
+                {cvData.personal.lastName}
+              </h2>
+              <p className="text-[10px] uppercase tracking-widest text-slate-500 mt-1">
+                {cvData.personal.jobTitle}
+              </p>
+            </div>
+            <div className="text-slate-600 text-[10px] space-y-0.5 sm:text-right">
+              {cvData.personal.email && <div>{cvData.personal.email}</div>}
+              {cvData.personal.phone && <div>{cvData.personal.phone}</div>}
+              {cvData.personal.address && <div>{cvData.personal.address}</div>}
+              {cvData.personal.website && <div>{cvData.personal.website}</div>}
+            </div>
+          </div>
+
+          {cvData.personal.summary && (
+            <p
+              className="text-slate-600 leading-relaxed text-[11px] border-l-2 pl-4 py-1 cv-block"
+              style={{ borderColor: cvData.config.accentColor }}
+            >
+              {cvData.personal.summary}
+            </p>
+          )}
+
+          <div className="space-y-6">
+            {cvData.sections
+              .filter((s) => s.visible)
+              .map((sec) => {
+                const isGrid = ['skills', 'languages'].includes(sec.type);
+                return (
+                  <div key={sec.id} className="grid grid-cols-1 md:grid-cols-12 gap-2 md:gap-6 cv-block">
+                    <div className="md:col-span-3">
+                      <h3 className="text-[10px] font-extrabold uppercase tracking-widest text-slate-400 md:text-right md:pt-1">
+                        {sec.title}
+                      </h3>
+                    </div>
+                    <div className="md:col-span-9 space-y-4">
+                      {isGrid ? (
+                        <div className="flex flex-wrap gap-x-3 gap-y-1">
+                          {sec.items.map((item) => (
+                            <div key={item.id} className="text-[11px] flex items-center gap-1.5">
+                              <span className="font-bold text-slate-800">{item.name ?? item.title}</span>
+                              {item.level && (
+                                <span className="text-[9px] text-slate-400">â€¢ {item.level}</span>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="space-y-4">
+                          {sec.items.map((item) => (
+                            <div key={item.id}>
+                              <div className="flex items-baseline justify-between gap-2">
+                                <h4 className="font-bold text-slate-800 text-[12px]">{item.title}</h4>
+                                <span className="text-[9px] text-slate-400 font-semibold shrink-0">
+                                  {item.startDate} {item.endDate && `â€“ ${item.endDate}`}
+                                </span>
+                              </div>
+                              <div className="text-[10px] text-slate-500 font-semibold">
+                                {item.subtitle} {item.location && `â€¢ ${item.location}`}
+                              </div>
+                              {item.description && (
+                                <p className="text-slate-600 text-[11px] leading-relaxed whitespace-pre-line pt-1">
+                                  {item.description}
+                                </p>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+          </div>
+        </div>
+      )}
+
+      {/* 4. CREATIEF LAYOUT */}
+      {cvData.config.template === 'creative' && (
+        <div className="flex flex-col">
+          <div style={{ backgroundColor: cvData.config.accentColor }} className="h-3 w-full" />
+          <div className="p-8 sm:p-10 flex flex-col gap-6">
+            <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 pb-4 border-b border-slate-100 cv-block">
+              {cvData.config.showPhoto && cvData.personal.avatar && (
+                <img
+                  src={cvData.personal.avatar}
+                  className="w-20 h-20 rounded-2xl object-cover shadow-sm rotate-2"
+                  style={{ border: `3px solid ${cvData.config.accentColor}` }}
+                  alt="Avatar"
+                />
+              )}
+              <div className="flex-1 text-center sm:text-left">
+                <h2 className="font-black text-2xl tracking-tight text-slate-900 leading-none">
+                  {cvData.personal.firstName}{' '}
+                  <span style={{ color: cvData.config.accentColor }}>{cvData.personal.lastName}</span>
+                </h2>
+                <p className="text-[10px] font-bold text-slate-600 mt-1 uppercase tracking-wide">
+                  {cvData.personal.jobTitle}
+                </p>
+                <div className="flex flex-wrap items-center justify-center sm:justify-start gap-x-3 gap-y-1 mt-2 text-[10px] text-slate-500">
+                  {cvData.personal.email && <span>{cvData.personal.email}</span>}
+                  {cvData.personal.phone && <span>{cvData.personal.phone}</span>}
+                  {cvData.personal.address && <span>{cvData.personal.address}</span>}
+                </div>
+              </div>
+            </div>
+
+            {cvData.personal.summary && (
+              <div className="p-3 rounded-xl bg-slate-50 border border-slate-100 cv-block">
+                <p className="text-slate-600 leading-relaxed text-[11px]">
+                  {cvData.personal.summary}
+                </p>
+              </div>
+            )}
+
+            <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+              <div className="md:col-span-8 space-y-5">
+                {cvData.sections
+                  .filter((s) => s.visible && !['skills', 'languages'].includes(s.type))
+                  .map((sec) => (
+                    <div key={sec.id} className="space-y-3 cv-block">
+                      <h3
+                        className="text-[11px] font-extrabold uppercase tracking-wider flex items-center gap-2"
+                        style={{ color: cvData.config.accentColor }}
+                      >
+                        <span
+                          className="h-1.5 w-1.5 rounded-full"
+                          style={{ backgroundColor: cvData.config.accentColor }}
+                        />{' '}
+                        {sec.title}
+                      </h3>
+                      <div
+                        className="space-y-3 pl-3 border-l"
+                        style={{ borderColor: `${cvData.config.accentColor}30` }}
+                      >
+                        {sec.items.map((item) => (
+                          <div key={item.id} className="relative">
+                            <div
+                              className="absolute -left-[16px] top-1.5 h-1.5 w-1.5 rounded-full border bg-white"
+                              style={{ borderColor: cvData.config.accentColor }}
+                            />
+                            <div className="flex justify-between items-baseline gap-1">
+                              <h4 className="font-extrabold text-slate-800 text-[12px]">{item.title}</h4>
+                              <span className="text-[9px] font-bold text-slate-400 shrink-0">
+                                {item.startDate} {item.endDate && `â€“ ${item.endDate}`}
+                              </span>
+                            </div>
+                            <div className="text-[10px] font-semibold text-slate-500">
+                              {item.subtitle} {item.location && `â€¢ ${item.location}`}
+                            </div>
+                            {item.description && (
+                              <p className="text-slate-600 text-[11px] mt-1 leading-relaxed whitespace-pre-line">
+                                {item.description}
+                              </p>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+              </div>
+
+              <div className="md:col-span-4 space-y-5">
+                {cvData.sections
+                  .filter((s) => s.visible && ['skills', 'languages'].includes(s.type))
+                  .map((sec) => (
+                    <div key={sec.id} className="space-y-2 cv-block">
+                      <h3
+                        className="text-[11px] font-extrabold uppercase tracking-wider pb-1 border-b"
+                        style={{
+                          color: cvData.config.accentColor,
+                          borderColor: `${cvData.config.accentColor}30`,
+                        }}
+                      >
+                        {sec.title}
+                      </h3>
+                      <div className="space-y-2">
+                        {sec.items.map((item) => (
+                          <div
+                            key={item.id}
+                            className="text-[11px] bg-slate-50 p-1.5 rounded border border-slate-100"
+                          >
+                            <div className="font-bold text-slate-800">{item.name}</div>
+                            {item.level && (
+                              <div className="text-[9px] text-slate-500 font-semibold">{item.level}</div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
+
 export default function App() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -203,29 +629,54 @@ export default function App() {
   const [activeTab, setActiveTab] = useState('editor');
   const [activeSection, setActiveSection] = useState('personal');
   const [successMessage, setSuccessMessage] = useState('');
-  const [pageGuides, setPageGuides] = useState<number[]>([]);
-  const cvContainerRef = useRef<HTMLDivElement>(null);
+  const [pages, setPages] = useState<Array<{ from: number; to: number }>>([]);
+  const [pageH, setPageH] = useState(0);
+  const measureRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     localStorage.setItem('cv_builder_data_local', JSON.stringify(cvData));
   }, [cvData]);
 
   useEffect(() => {
-    const el = cvContainerRef.current;
+    const el = measureRef.current;
     if (!el) return;
-    const update = () => {
+    const compute = () => {
+      const containerTop = el.getBoundingClientRect().top;
       const mmToPx = el.offsetWidth / 210;
-      const pageHeightPx = 297 * mmToPx;
-      const pages = Math.ceil(el.offsetHeight / pageHeightPx);
-      setPageGuides(
-        Array.from({ length: Math.max(0, pages - 1) }, (_, i) => (i + 1) * pageHeightPx)
-      );
+      const pageHeight = Math.round(297 * mmToPx);
+      if (pageHeight === 0) return;
+      const totalH = el.getBoundingClientRect().height;
+      const blocks = Array.from(el.querySelectorAll<HTMLElement>('.cv-block'));
+      const blockPos = blocks.map((b) => ({
+        top: b.getBoundingClientRect().top - containerTop,
+        bottom: b.getBoundingClientRect().bottom - containerTop,
+      }));
+      const result: Array<{ from: number; to: number }> = [];
+      let from = 0;
+      while (from < totalH) {
+        const maxEnd = from + pageHeight;
+        if (maxEnd >= totalH) {
+          result.push({ from, to: from + pageHeight });
+          break;
+        }
+        let breakAt = maxEnd;
+        for (const pos of blockPos) {
+          if (pos.top > from && pos.top < maxEnd && pos.bottom > maxEnd) {
+            breakAt = Math.min(breakAt, pos.top);
+          }
+        }
+        if (breakAt <= from) breakAt = maxEnd;
+        result.push({ from, to: from + pageHeight });
+        from = breakAt;
+      }
+      setPageH(pageHeight);
+      setPages(result);
     };
-    const observer = new ResizeObserver(update);
-    observer.observe(el);
-    update();
-    return () => observer.disconnect();
-  }, []);
+    const obs = new ResizeObserver(compute);
+    obs.observe(el);
+    compute();
+    return () => obs.disconnect();
+  }, [cvData]);
 
   const triggerNotification = (msg: string) => {
     setSuccessMessage(msg);
@@ -285,7 +736,7 @@ export default function App() {
         const parsed = JSON.parse(result) as CvData;
         if (parsed.personal && parsed.sections && parsed.config) {
           setCvData(parsed);
-          triggerNotification('Back-up succesvol geïmporteerd!');
+          triggerNotification('Back-up succesvol geÃ¯mporteerd!');
         } else {
           alert('Dit lijkt geen geldig CV-Bouwer bestand te zijn.');
         }
@@ -425,7 +876,7 @@ export default function App() {
       const reader = new FileReader();
       reader.onloadend = () => {
         handlePersonalChange('avatar', reader.result as string);
-        triggerNotification('Profielfoto geüpload!');
+        triggerNotification('Profielfoto geÃ¼pload!');
       };
       reader.readAsDataURL(file);
     }
@@ -1020,501 +1471,57 @@ export default function App() {
             activeTab === 'preview' ? 'block' : 'hidden sm:block'
           } print:block print:w-full`}
         >
-          <div className="relative w-full max-w-[210mm] mx-auto print:max-w-full">
+          <div
+            className={`w-full max-w-[210mm] mx-auto relative print:max-w-full ${
+              cvData.config.fontFamily === 'font-serif'
+                ? 'font-serif'
+                : cvData.config.fontFamily === 'font-mono'
+                  ? 'font-mono'
+                  : 'font-sans'
+            } ${
+              cvData.config.fontSize === 'small'
+                ? 'text-xs'
+                : cvData.config.fontSize === 'large'
+                  ? 'text-base'
+                  : 'text-sm'
+            }`}
+          >
+            {/* Hidden measuring div â€“ absolutely positioned so it doesn't affect layout */}
             <div
-              id="cv-preview-container"
-              ref={cvContainerRef}
-              className={`w-full min-h-[297mm] bg-white shadow-lg border border-slate-200 rounded-md overflow-hidden print:shadow-none print:border-none print:rounded-none print:overflow-visible ${
-                cvData.config.fontFamily === 'font-serif'
-                  ? 'font-serif'
-                  : cvData.config.fontFamily === 'font-mono'
-                    ? 'font-mono'
-                    : 'font-sans'
-              } ${
-                cvData.config.fontSize === 'small'
-                  ? 'text-xs'
-                  : cvData.config.fontSize === 'large'
-                    ? 'text-base'
-                    : 'text-sm'
-              }`}
+              ref={measureRef}
+              className="absolute top-0 left-0 w-full pointer-events-none"
+              style={{ visibility: 'hidden', zIndex: -1 }}
+              aria-hidden="true"
             >
-            {/* 1. MODERN LAYOUT */}
-            {cvData.config.template === 'modern' && (
-              <div className="grid grid-cols-12 min-h-[297mm]">
-                <div
-                  style={{ backgroundColor: `${cvData.config.accentColor}15` }}
-                  className="col-span-4 p-6 border-r border-slate-100 flex flex-col gap-6"
-                >
-                  <div className="text-center">
-                    {cvData.config.showPhoto && cvData.personal.avatar && (
-                      <img
-                        src={cvData.personal.avatar}
-                        className="w-24 h-24 rounded-full object-cover mx-auto mb-3 border-2"
-                        style={{ borderColor: cvData.config.accentColor }}
-                        alt="Avatar"
-                      />
-                    )}
-                    <h2 className="font-extrabold text-lg leading-tight text-slate-900">
-                      {cvData.personal.firstName} {cvData.personal.lastName}
-                    </h2>
-                    <p className="text-xs font-semibold mt-1 text-slate-600">
-                      {cvData.personal.jobTitle}
-                    </p>
-                  </div>
-
-                  <div className="space-y-3 text-slate-700 pt-4 border-t border-slate-200/50">
-                    <h3 className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
-                      Contact
-                    </h3>
-                    {cvData.personal.email && (
-                      <div className="flex gap-2 text-[11px]">
-                        <Mail
-                          className="h-3.5 w-3.5 shrink-0"
-                          style={{ color: cvData.config.accentColor }}
-                        />
-                        <span className="break-all">{cvData.personal.email}</span>
-                      </div>
-                    )}
-                    {cvData.personal.phone && (
-                      <div className="flex gap-2 text-[11px]">
-                        <Phone
-                          className="h-3.5 w-3.5 shrink-0"
-                          style={{ color: cvData.config.accentColor }}
-                        />
-                        <span>{cvData.personal.phone}</span>
-                      </div>
-                    )}
-                    {cvData.personal.address && (
-                      <div className="flex gap-2 text-[11px]">
-                        <MapPin
-                          className="h-3.5 w-3.5 shrink-0"
-                          style={{ color: cvData.config.accentColor }}
-                        />
-                        <span>{cvData.personal.address}</span>
-                      </div>
-                    )}
-                    {cvData.personal.website && (
-                      <div className="flex gap-2 text-[11px]">
-                        <Globe
-                          className="h-3.5 w-3.5 shrink-0"
-                          style={{ color: cvData.config.accentColor }}
-                        />
-                        <span className="break-all">{cvData.personal.website}</span>
-                      </div>
-                    )}
-                  </div>
-
-                  {cvData.sections
-                    .filter((s) => s.visible && ['skills', 'languages'].includes(s.type))
-                    .map((sec) => (
-                      <div key={sec.id} className="pt-4 border-t border-slate-200/50">
-                        <h3 className="text-[10px] font-bold uppercase tracking-wider text-slate-500 mb-2">
-                          {sec.title}
-                        </h3>
-                        <div className="space-y-2">
-                          {sec.items.map((item) => (
-                            <div key={item.id} className="text-[11px]">
-                              <div className="font-bold text-slate-800">{item.name}</div>
-                              <div className="text-[9px] text-slate-500">{item.level}</div>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    ))}
-                </div>
-
-                <div className="col-span-8 p-8 flex flex-col gap-6">
-                  {cvData.personal.summary && (
-                    <div>
-                      <h3
-                        className="text-[11px] font-bold uppercase tracking-wider mb-2"
-                        style={{ color: cvData.config.accentColor }}
-                      >
-                        Profiel
-                      </h3>
-                      <p className="text-slate-600 leading-relaxed text-[11px]">
-                        {cvData.personal.summary}
-                      </p>
-                    </div>
-                  )}
-
-                  {cvData.sections
-                    .filter((s) => s.visible && !['skills', 'languages'].includes(s.type))
-                    .map((sec) => (
-                      <div key={sec.id} className="space-y-3">
-                        <h3
-                          className="text-[11px] font-bold uppercase tracking-wider pb-1 border-b"
-                          style={{
-                            color: cvData.config.accentColor,
-                            borderColor: `${cvData.config.accentColor}30`,
-                          }}
-                        >
-                          {sec.title}
-                        </h3>
-                        <div className="space-y-4">
-                          {sec.items.map((item) => (
-                            <div key={item.id}>
-                              <div className="flex justify-between items-baseline gap-1">
-                                <div>
-                                  <h4 className="font-bold text-slate-800 text-[12px]">
-                                    {item.title}
-                                  </h4>
-                                  <span className="text-[10px] font-semibold text-slate-500">
-                                    {item.subtitle}
-                                  </span>
-                                  {item.location && (
-                                    <span className="text-[9px] text-slate-400">
-                                      {' '}
-                                      • {item.location}
-                                    </span>
-                                  )}
-                                </div>
-                                <span className="text-[9px] font-bold text-slate-500 shrink-0">
-                                  {item.startDate}{' '}
-                                  {item.endDate && `– ${item.endDate}`}
-                                </span>
-                              </div>
-                              {item.description && (
-                                <p className="text-slate-600 text-[11px] mt-1 whitespace-pre-line leading-relaxed">
-                                  {item.description}
-                                </p>
-                              )}
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    ))}
-                </div>
-              </div>
-            )}
-
-            {/* 2. KLASSIEK LAYOUT */}
-            {cvData.config.template === 'classic' && (
-              <div className="p-8 sm:p-10 flex flex-col gap-6">
-                <div
-                  className="text-center border-b pb-6"
-                  style={{ borderColor: `${cvData.config.accentColor}30` }}
-                >
-                  <h2
-                    className="font-extrabold text-2xl tracking-wide text-slate-900"
-                    style={{ color: cvData.config.accentColor }}
-                  >
-                    {cvData.personal.firstName.toUpperCase()} {cvData.personal.lastName.toUpperCase()}
-                  </h2>
-                  <p className="text-xs font-semibold uppercase tracking-wider text-slate-600 mt-1">
-                    {cvData.personal.jobTitle}
-                  </p>
-                  <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-1 mt-4 text-[11px] text-slate-600">
-                    {cvData.personal.email && <span>{cvData.personal.email}</span>}
-                    {cvData.personal.phone && <span>{cvData.personal.phone}</span>}
-                    {cvData.personal.address && <span>{cvData.personal.address}</span>}
-                    {cvData.personal.website && <span>{cvData.personal.website}</span>}
-                  </div>
-                </div>
-
-                {cvData.personal.summary && (
-                  <div className="text-center max-w-2xl mx-auto">
-                    <p className="text-slate-600 leading-relaxed italic text-[11px]">
-                      &ldquo;{cvData.personal.summary}&rdquo;
-                    </p>
-                  </div>
-                )}
-
-                {cvData.sections
-                  .filter((s) => s.visible)
-                  .map((sec) => {
-                    const isGrid = ['skills', 'languages'].includes(sec.type);
-                    return (
-                      <div key={sec.id} className="space-y-2">
-                        <h3
-                          className="text-[11px] font-extrabold uppercase tracking-widest pb-1 border-b-2"
-                          style={{
-                            color: cvData.config.accentColor,
-                            borderColor: cvData.config.accentColor,
-                          }}
-                        >
-                          {sec.title}
-                        </h3>
-                        {isGrid ? (
-                          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 pt-1">
-                            {sec.items.map((item) => (
-                              <div key={item.id} className="text-[11px]">
-                                <span className="font-bold text-slate-800">
-                                  {item.name ?? item.title}
-                                </span>
-                                {item.level && (
-                                  <span className="text-slate-500 font-medium">
-                                    {' '}
-                                    ({item.level})
-                                  </span>
-                                )}
-                              </div>
-                            ))}
-                          </div>
-                        ) : (
-                          <div className="space-y-4 pt-1">
-                            {sec.items.map((item) => (
-                              <div
-                                key={item.id}
-                                className="flex flex-col sm:flex-row justify-between gap-2"
-                              >
-                                <div className="flex-1">
-                                  <h4 className="font-bold text-slate-800 text-[12px]">
-                                    {item.title}
-                                  </h4>
-                                  <div className="text-[10px] text-slate-600 font-medium">
-                                    {item.subtitle} {item.location && `• ${item.location}`}
-                                  </div>
-                                  {item.description && (
-                                    <p className="text-slate-600 text-[11px] mt-1 whitespace-pre-line leading-relaxed">
-                                      {item.description}
-                                    </p>
-                                  )}
-                                </div>
-                                <div className="text-[9px] font-bold text-slate-500 sm:text-right shrink-0">
-                                  {item.startDate} {item.endDate && `– ${item.endDate}`}
-                                </div>
-                              </div>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                    );
-                  })}
-              </div>
-            )}
-
-            {/* 3. MINIMALISTISCH LAYOUT */}
-            {cvData.config.template === 'minimal' && (
-              <div className="p-8 sm:p-12 flex flex-col gap-8">
-                <div className="flex flex-col sm:flex-row justify-between items-start gap-4 border-b pb-4 border-slate-100">
-                  <div>
-                    <h2 className="font-light text-2xl tracking-tight text-slate-900">
-                      <strong className="font-semibold">{cvData.personal.firstName}</strong>{' '}
-                      {cvData.personal.lastName}
-                    </h2>
-                    <p className="text-[10px] uppercase tracking-widest text-slate-500 mt-1">
-                      {cvData.personal.jobTitle}
-                    </p>
-                  </div>
-                  <div className="text-slate-600 text-[10px] space-y-0.5 sm:text-right">
-                    {cvData.personal.email && <div>{cvData.personal.email}</div>}
-                    {cvData.personal.phone && <div>{cvData.personal.phone}</div>}
-                    {cvData.personal.address && <div>{cvData.personal.address}</div>}
-                    {cvData.personal.website && <div>{cvData.personal.website}</div>}
-                  </div>
-                </div>
-
-                {cvData.personal.summary && (
-                  <p
-                    className="text-slate-600 leading-relaxed text-[11px] border-l-2 pl-4 py-1"
-                    style={{ borderColor: cvData.config.accentColor }}
-                  >
-                    {cvData.personal.summary}
-                  </p>
-                )}
-
-                <div className="space-y-6">
-                  {cvData.sections
-                    .filter((s) => s.visible)
-                    .map((sec) => {
-                      const isGrid = ['skills', 'languages'].includes(sec.type);
-                      return (
-                        <div key={sec.id} className="grid grid-cols-1 md:grid-cols-12 gap-2 md:gap-6">
-                          <div className="md:col-span-3">
-                            <h3 className="text-[10px] font-extrabold uppercase tracking-widest text-slate-400 md:text-right md:pt-1">
-                              {sec.title}
-                            </h3>
-                          </div>
-                          <div className="md:col-span-9 space-y-4">
-                            {isGrid ? (
-                              <div className="flex flex-wrap gap-x-3 gap-y-1">
-                                {sec.items.map((item) => (
-                                  <div key={item.id} className="text-[11px] flex items-center gap-1.5">
-                                    <span className="font-bold text-slate-800">
-                                      {item.name ?? item.title}
-                                    </span>
-                                    {item.level && (
-                                      <span className="text-[9px] text-slate-400">
-                                        • {item.level}
-                                      </span>
-                                    )}
-                                  </div>
-                                ))}
-                              </div>
-                            ) : (
-                              <div className="space-y-4">
-                                {sec.items.map((item) => (
-                                  <div key={item.id}>
-                                    <div className="flex items-baseline justify-between gap-2">
-                                      <h4 className="font-bold text-slate-800 text-[12px]">
-                                        {item.title}
-                                      </h4>
-                                      <span className="text-[9px] text-slate-400 font-semibold shrink-0">
-                                        {item.startDate} {item.endDate && `– ${item.endDate}`}
-                                      </span>
-                                    </div>
-                                    <div className="text-[10px] text-slate-500 font-semibold">
-                                      {item.subtitle} {item.location && `• ${item.location}`}
-                                    </div>
-                                    {item.description && (
-                                      <p className="text-slate-600 text-[11px] leading-relaxed whitespace-pre-line pt-1">
-                                        {item.description}
-                                      </p>
-                                    )}
-                                  </div>
-                                ))}
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      );
-                    })}
-                </div>
-              </div>
-            )}
-
-            {/* 4. CREATIEF LAYOUT */}
-            {cvData.config.template === 'creative' && (
-              <div className="flex flex-col">
-                <div style={{ backgroundColor: cvData.config.accentColor }} className="h-3 w-full" />
-                <div className="p-8 sm:p-10 flex flex-col gap-6">
-                  <div className="flex flex-col sm:flex-row items-center sm:items-start gap-4 pb-4 border-b border-slate-100">
-                    {cvData.config.showPhoto && cvData.personal.avatar && (
-                      <img
-                        src={cvData.personal.avatar}
-                        className="w-20 h-20 rounded-2xl object-cover shadow-sm rotate-2"
-                        style={{ border: `3px solid ${cvData.config.accentColor}` }}
-                        alt="Avatar"
-                      />
-                    )}
-                    <div className="flex-1 text-center sm:text-left">
-                      <h2 className="font-black text-2xl tracking-tight text-slate-900 leading-none">
-                        {cvData.personal.firstName}{' '}
-                        <span style={{ color: cvData.config.accentColor }}>
-                          {cvData.personal.lastName}
-                        </span>
-                      </h2>
-                      <p className="text-[10px] font-bold text-slate-600 mt-1 uppercase tracking-wide">
-                        {cvData.personal.jobTitle}
-                      </p>
-                      <div className="flex flex-wrap items-center justify-center sm:justify-start gap-x-3 gap-y-1 mt-2 text-[10px] text-slate-500">
-                        {cvData.personal.email && <span>{cvData.personal.email}</span>}
-                        {cvData.personal.phone && <span>{cvData.personal.phone}</span>}
-                        {cvData.personal.address && <span>{cvData.personal.address}</span>}
-                      </div>
-                    </div>
-                  </div>
-
-                  {cvData.personal.summary && (
-                    <div className="p-3 rounded-xl bg-slate-50 border border-slate-100">
-                      <p className="text-slate-600 leading-relaxed text-[11px]">
-                        {cvData.personal.summary}
-                      </p>
-                    </div>
-                  )}
-
-                  <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
-                    <div className="md:col-span-8 space-y-5">
-                      {cvData.sections
-                        .filter((s) => s.visible && !['skills', 'languages'].includes(s.type))
-                        .map((sec) => (
-                          <div key={sec.id} className="space-y-3">
-                            <h3
-                              className="text-[11px] font-extrabold uppercase tracking-wider flex items-center gap-2"
-                              style={{ color: cvData.config.accentColor }}
-                            >
-                              <span
-                                className="h-1.5 w-1.5 rounded-full"
-                                style={{ backgroundColor: cvData.config.accentColor }}
-                              />{' '}
-                              {sec.title}
-                            </h3>
-                            <div
-                              className="space-y-3 pl-3 border-l"
-                              style={{ borderColor: `${cvData.config.accentColor}30` }}
-                            >
-                              {sec.items.map((item) => (
-                                <div key={item.id} className="relative">
-                                  <div
-                                    className="absolute -left-[16px] top-1.5 h-1.5 w-1.5 rounded-full border bg-white"
-                                    style={{ borderColor: cvData.config.accentColor }}
-                                  />
-                                  <div className="flex justify-between items-baseline gap-1">
-                                    <h4 className="font-extrabold text-slate-800 text-[12px]">
-                                      {item.title}
-                                    </h4>
-                                    <span className="text-[9px] font-bold text-slate-400 shrink-0">
-                                      {item.startDate} {item.endDate && `– ${item.endDate}`}
-                                    </span>
-                                  </div>
-                                  <div className="text-[10px] font-semibold text-slate-500">
-                                    {item.subtitle} {item.location && `• ${item.location}`}
-                                  </div>
-                                  {item.description && (
-                                    <p className="text-slate-600 text-[11px] mt-1 leading-relaxed whitespace-pre-line">
-                                      {item.description}
-                                    </p>
-                                  )}
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        ))}
-                    </div>
-
-                    <div className="md:col-span-4 space-y-5">
-                      {cvData.sections
-                        .filter((s) => s.visible && ['skills', 'languages'].includes(s.type))
-                        .map((sec) => (
-                          <div key={sec.id} className="space-y-2">
-                            <h3
-                              className="text-[11px] font-extrabold uppercase tracking-wider pb-1 border-b"
-                              style={{
-                                color: cvData.config.accentColor,
-                                borderColor: `${cvData.config.accentColor}30`,
-                              }}
-                            >
-                              {sec.title}
-                            </h3>
-                            <div className="space-y-2">
-                              {sec.items.map((item) => (
-                                <div
-                                  key={item.id}
-                                  className="text-[11px] bg-slate-50 p-1.5 rounded border border-slate-100"
-                                >
-                                  <div className="font-bold text-slate-800">{item.name}</div>
-                                  {item.level && (
-                                    <div className="text-[9px] text-slate-500 font-semibold">
-                                      {item.level}
-                                    </div>
-                                  )}
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
+              <CVContent cvData={cvData} />
             </div>
 
-            {/* Paginagidsen – alleen zichtbaar in de preview, niet bij printen */}
-            {pageGuides.map((top, i) => (
-              <div
-                key={i}
-                className="absolute left-0 right-0 flex items-center gap-2 pointer-events-none print:hidden z-10"
-                style={{ top: `${top}px` }}
-              >
-                <div className="flex-1 border-t-2 border-dashed border-slate-300" />
-                <span className="text-[10px] bg-white text-slate-400 px-2 py-0.5 rounded border border-slate-200 shrink-0">
-                  Pagina {i + 2}
-                </span>
-                <div className="flex-1 border-t-2 border-dashed border-slate-300" />
-              </div>
-            ))}
+            {/* Screen: stacked A4 pages with gap between them */}
+            <div className="flex flex-col gap-4 print:hidden">
+              {pages.length === 0 ? (
+                <div
+                  className="w-full bg-white shadow-lg border border-slate-200 rounded-md"
+                  style={{ minHeight: '297mm' }}
+                />
+              ) : (
+                pages.map((page, i) => (
+                  <div
+                    key={i}
+                    className="w-full bg-white shadow-lg border border-slate-200 rounded-md overflow-hidden"
+                    style={{ height: `${pageH}px` }}
+                  >
+                    <div style={{ transform: `translateY(-${page.from}px)` }}>
+                      <CVContent cvData={cvData} />
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+
+            {/* Print-only: full unclipped content */}
+            <div id="cv-preview-container" className="hidden print:block">
+              <CVContent cvData={cvData} />
+            </div>
           </div>
         </section>
       </main>
